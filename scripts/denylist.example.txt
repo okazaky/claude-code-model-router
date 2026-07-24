@@ -1,0 +1,18 @@
+# denylist.example.txt — template for your local denylist.
+#
+# Copy to denylist.local.txt (gitignored) and add terms that must NEVER leave
+# your machine toward guarded providers. One term per line, minimum 4 chars,
+# lines starting with # are comments. Substring match, case-sensitive.
+#
+# Typical entries:
+#   - your legal name (and its kanji/kana variants)
+#   - home address fragments and postal code
+#   - internal project codenames
+#   - client and partner company names
+#   - IDs that identify you (voice-clone IDs, member IDs, ...)
+#
+# Examples (replace with your own):
+#Taro Yamada
+#山田太郎
+#123-4567
+#project-neptune

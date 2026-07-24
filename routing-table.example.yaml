@@ -1,0 +1,100 @@
+# model-router routing table (data-driven — edit this to change behavior)
+# via: agent = Claude Code Agent tool with a model override / bash = external CLI
+# fallback: ROUTE ID to switch to when invocation fails or the guard blocks
+# prompts: always written to $PROMPT_FILE first (see SKILL.md Step 3) — never inline
+version: "example-1.0"
+default: no_dispatch  # nothing matches / in doubt -> do it in the main loop
+
+routes:
+  - id: frontier-reasoning
+    model: <your-frontier-model>          # e.g. the highest Claude tier you have
+    via: agent
+    use_for:
+      - architecture design & technology selection
+      - root-cause investigation of hard bugs
+      - long autonomous tasks containing consequential decisions
+      - security design & threat modeling
+    why: highest intelligence, highest cost — reserve for decisions that are expensive to get wrong
+    fallback: main-implementation
+
+  - id: main-implementation
+    model: <your-mid-model>               # e.g. Opus-class
+    via: agent
+    use_for:
+      - mainline feature implementation
+      - multi-file refactors
+      - medium-to-large code changes
+    why: balance of implementation strength and cost
+    fallback: routine-coding
+
+  - id: routine-coding
+    model: <your-small-model>             # e.g. Sonnet-class
+    via: agent
+    use_for:
+      - day-to-day coding
+      - test writing
+      - documentation upkeep
+      - boilerplate implementation
+    why: the balanced workhorse for self-contained standard tasks
+    fallback: mechanical-bulk
+
+  - id: mechanical-bulk
+    model: <your-tiny-model>              # e.g. Haiku-class
+    via: agent
+    use_for:
+      - mechanical batch transforms
+      - searching / classifying many files
+      - formatting
+    why: cheapest and fastest — judgment-free work only
+    fallback: routine-coding
+
+  - id: second-opinion
+    model: <different-lineage-cli>        # e.g. Codex
+    via: bash
+    invoke: codex exec --skip-git-repo-check "$(cat "$PROMPT_FILE")"  # never inline prompt text into the shell string
+    use_for:
+      - second opinions on code review
+      - rescue when the main loop is stuck
+      - adversarial verification (try to break it)
+      - a genuinely different perspective
+    why: a different model lineage does not share the implementer's blind spots
+    fallback: main-implementation
+
+  - id: budget-bulk
+    model: <budget-provider>              # a cheap provider you treat as data-residency-sensitive
+    via: bash
+    guard: pii_guard   # enforce in three layers: manual pre-check + CLI wrapper + PreToolUse hook
+    invoke: <your-wrapper-cli> -p "$(cat "$PROMPT_FILE")"
+    # Run isolated: separate config dir (no personal memory/hooks/MCP), clean env (env -i),
+    # dedicated workspace (no ancestor config files), shell/web/subagent tools disabled.
+    # Files go in only as guard-checked copies into the workspace.
+    use_for:
+      - bulk summarization / classification with no confidential content
+      - first-draft translations
+      - bulk text generation
+      - throwaway scripts
+      - first drafts of public code (main loop verifies)
+      - brainstorm / copy variation floods
+    why: very cheap; with the guard stack and isolation it can take broad non-confidential volume
+    fallback: mechanical-bulk
+
+  - id: parallel-build
+    model: <best-of-n-capable-cli>
+    via: bash
+    invoke: <cli> -p "$(cat "$PROMPT_FILE")" --best-of-n 3
+    use_for:
+      - implementations worth N parallel attempts with selection
+      - build tasks with a self-check loop
+    why: parallel attempts + self-verification are this route's unique features
+    fallback: second-opinion
+
+  - id: fast-iteration
+    model: <fast-small-cli>
+    via: bash
+    invoke: <cli> -p "$(cat "$PROMPT_FILE")"
+    use_for:
+      - speed-first small implementations
+      - quick fix iterations
+      - prototypes
+    why: fast model for small, rapid loops
+    fallback: routine-coding

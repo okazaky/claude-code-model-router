@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+# local state (dispatch logs may contain task/client names)
+state/
+# local denylist files must never be committed
+*.local.txt

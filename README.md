@@ -28,6 +28,22 @@ Three ideas, extracted from a production single-operator setup:
    files, running the code — before the main loop declares completion. A confident "it
    works" from the model that wrote it is treated as a claim, not a fact.
 
+## Editions
+
+This public repository is the **Lite edition**: complete, functional, MIT-licensed — and
+frozen (bug fixes only). New capabilities land in the privately maintained **Pro edition**:
+an expanded production routing table (second-opinion / budget-bulk / long-context / vision /
+deterministic-script routes), dispatch-log weekly review tooling, a PreToolUse hook that
+enforces the guard at the tool-call layer, an isolated-launch wrapper for guarded CLIs, and
+a delegation brief template.
+
+Pro access is included for OZ AI school members while enrolled. Standalone licensing:
+announcement to follow (watch this repo / the author's Zenn).
+
+（日本語: この公開版はLite版＝完全動作・MIT・機能凍結。拡張ルーティング表・ログ解析・
+フック強制・隔離起動ラッパーを含むPro版は、オズAIスクール受講生は在籍期間中利用可。
+単体販売は準備中。）
+
 ## Files
 
 | File | What it is |
